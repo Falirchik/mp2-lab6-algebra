@@ -46,8 +46,11 @@ void Interface::Print_Operation(){
 	cout << "3. Выход\n";
 }
 
-void Interface::Exit(){
-
+char Interface::Exit(){
+	char a;
+	cout << "Выйти? (Y/N)" << endl;
+	cin >> a;
+	return a;
 }
 
 void Interface::Add_Pol(){

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -138,11 +138,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HTable1.cpp" />
+    <ClCompile Include="HTable2.cpp" />
     <ClCompile Include="interface.cpp" />
+    <ClCompile Include="LTableL.cpp" />
+    <ClCompile Include="LTableM.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OTable.cpp" />
+    <ClCompile Include="Polinomial.cpp" />
+    <ClCompile Include="Stack.cpp" />
+    <ClCompile Include="TListPoly.cpp" />
+    <ClCompile Include="TMonomial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HTable1.h" />
+    <ClInclude Include="HTable2.h" />
     <ClInclude Include="interface.h" />
+    <ClInclude Include="LTableL.h" />
+    <ClInclude Include="LTableM.h" />
+    <ClInclude Include="OTable.h" />
+    <ClInclude Include="Polinomial.h" />
+    <ClInclude Include="Stack.h" />
+    <ClInclude Include="TListPoly.h" />
+    <ClInclude Include="TMonomial.h" />
+    <ClInclude Include="TTable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

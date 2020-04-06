@@ -16,11 +16,10 @@ public:
 	void Print_Table();				//печатает выбор доступные таблицы
 	void Print_Menu();				//печать меню на экран
 	void Print_Operation();			//печать выбора операций 
-	void Exit();
-	void Add_Pol();
-	void Del_Pol();
-	void Print_All_Pol();
-	void Calculation_Pol();
+	char Exit();					//подтвердить выход
+	void Add_Pol();					//добавление полинома
+	void Del_Pol();					//удаление полинома
+	void Print_All_Pol();			//вывод всех полиномов
+	void Calculation_Pol();			//вычисление полинома
 
 };
-
