@@ -143,6 +143,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="test_main.cpp" />
+    <ClCompile Include="test_polynomial.cpp" />
+    <ClCompile Include="test_tlist.cpp" />
+    <ClCompile Include="test_tmonomial.cpp" />
+    <ClCompile Include="test_tstack.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\base\base.vcxproj">
+      <Project>{5f54bb7e-e405-4bd4-9166-6cbb0dfd61ec}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\gtest\gtest.vcxproj">
+      <Project>{60932afc-7808-48b7-b3bf-f2bc151c0065}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
