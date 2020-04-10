@@ -1,12 +1,12 @@
-#include "TListPoly.h"
+п»ї#include "TListPoly.h"
 
-//Конструктор
+//РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 TPList::TPList()
 {
 	pFirst = nullptr;
 	size_list = 0;
 }
-//Конструктор копирования
+//РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ
 TPList::TPList(const TPList& Plist)
 {
 	size_list = 0;
@@ -22,7 +22,7 @@ TPList::TPList(const TPList& Plist)
 		}
 	}
 }
-//Деструктор
+//Р”РµСЃС‚СЂСѓРєС‚РѕСЂ
 TPList::~TPList()
 {
 	if (pFirst != nullptr)
@@ -40,7 +40,7 @@ TPList::~TPList()
 		size_list = size_list - 1;
 	}
 }
-//Вставка в конц
+//Р’СЃС‚Р°РІРєР° РІ РєРѕРЅС†
 void TPList::InsertLast(const TMonom& mon)
 {
 	if (pFirst == nullptr)
@@ -61,10 +61,10 @@ void TPList::InsertLast(const TMonom& mon)
 		size_list = size_list + 1;
 	}
 }
-//Удаление с начала
+//РЈРґР°Р»РµРЅРёРµ СЃ РЅР°С‡Р°Р»Р°
 void TPList::TakeFirst()
 {
-	if (pFirst != nullptr)
+	if (pFirst!= nullptr)
 	{
 		TPLink* p = pFirst;
 		if (pFirst->pNext != nullptr)
@@ -78,12 +78,12 @@ void TPList::TakeFirst()
 		delete p;
 		size_list = size_list - 1;
 	}
-	else
+	else 
 	{
 		throw  "Wrong with takefirst!";
 	}
 }
-//Поиск элемента(звена)
+//РџРѕРёСЃРє СЌР»РµРјРµРЅС‚Р°(Р·РІРµРЅР°)
 TPLink* TPList::Find(const int& pos)
 {
 	if ((pos < 0) || (pos > (size_list - 1)))
@@ -106,7 +106,7 @@ TPLink* TPList::Find(const int& pos)
 	}
 	return p;
 }
-//Получение данных(монома) по позиции
+//РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С…(РјРѕРЅРѕРјР°) РїРѕ РїРѕР·РёС†РёРё
 TMonom TPList::GetMonPos(const int pos)
 {
 	if ((pos < 0) || (pos > (size_list - 1)))
@@ -116,7 +116,7 @@ TMonom TPList::GetMonPos(const int pos)
 	int i = 0;
 	TPLink* p = pFirst;
 	if (pos == 0)
-	{
+	{		
 		TMonom res = p->m;
 		return res;
 	}
@@ -124,19 +124,19 @@ TMonom TPList::GetMonPos(const int pos)
 	{
 		p = p->pNext;
 		i++;
-	}
+	}	
 	TMonom res = p->m;
 	return res;
 }
-//Оператор присваивания
-TPList& TPList::operator=(const TPList& Plist)
+//РћРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+TPList& TPList::operator=(const TPList& Plist) 
 {
 	if (this != &Plist)
-	{
+	{		
 		while (pFirst != nullptr)
 		{
 			TakeFirst();
-		}
+		}		
 		TPLink* p = Plist.pFirst;
 		if (p != nullptr)
 		{
@@ -150,8 +150,8 @@ TPList& TPList::operator=(const TPList& Plist)
 	}
 	return *this;
 }
-//Оператор сравнения (равно)
-bool TPList::operator==(const TPList& Plist) const
+//РћРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ (СЂР°РІРЅРѕ)
+bool TPList::operator==(const TPList& Plist) const 
 {
 	if (size_list != Plist.size_list)
 	{
@@ -181,8 +181,8 @@ bool TPList::operator==(const TPList& Plist) const
 		return true;
 	}
 }
-//Оператор сравнения (неравно)
-bool TPList::operator!=(const TPList& Plist) const
+//РћРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ (РЅРµСЂР°РІРЅРѕ)
+bool TPList::operator!=(const TPList& Plist) const 
 {
 	if (*this == Plist)
 	{
@@ -193,7 +193,7 @@ bool TPList::operator!=(const TPList& Plist) const
 		return true;
 	}
 }
-TPLink* TPList::DeleteTheLink(TPLink* p)
+TPLink* TPList::DeleteTheLink(TPLink* p) 
 {
 	if (p == pFirst)
 	{
@@ -223,7 +223,7 @@ TPLink* TPList::DeleteTheLink(TPLink* p)
 		size_list = size_list - 1;
 		return pC;
 	}
-	else
+	else 
 	{
 		pC->pNext = p->pNext;
 		delete p;
@@ -231,8 +231,8 @@ TPLink* TPList::DeleteTheLink(TPLink* p)
 		return pC;
 	}
 }
-//Сортировка списка мономов
-void TPList::SortPList()
+//РЎРѕСЂС‚РёСЂРѕРІРєР° СЃРїРёСЃРєР° РјРѕРЅРѕРјРѕРІ
+void TPList::SortPList() 
 {
 	if (pFirst != nullptr)
 	{

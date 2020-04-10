@@ -1,9 +1,13 @@
-#include "TMonomial.h"
+п»ї#include "TMonomial.h"
 #include <gtest.h>
 
 TEST(TMonom, can_create_monom)
 {
 	ASSERT_NO_THROW(TMonom m);
+}
+TEST(TMonom, can_not_create_wrong_monom)
+{
+	ASSERT_ANY_THROW(TMonom m(2, -1, 101, 22));
 }
 TEST(TMonom, can_get_coeff)
 {
@@ -27,20 +31,15 @@ TEST(TMonom, can_create_with_no_parameters)
 }
 TEST(TMonom, can_create_with_parameters)
 {
-	//положительные параметры
+	//РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
 	TMonom m1(5, 2, 3, 4);
 	EXPECT_EQ(m1.GetCoeff(), 5);
 	EXPECT_EQ(m1.GetIndexX(), 2);
 	EXPECT_EQ(m1.GetIndexY(), 3);
 	EXPECT_EQ(m1.GetIndexZ(), 4);
-	//отрицательный коэффициент
+	//РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Р№ РєРѕСЌС„С„РёС†РёРµРЅС‚
 	TMonom m2(-5, 2, 3, 4);
 	EXPECT_EQ(-5, m2.GetCoeff());
-	//отрицательные (и нулевые) степени переменных
-	TMonom m3(5, -2, -3, 0);
-	EXPECT_EQ(m3.GetIndexX(), -2);
-	EXPECT_EQ(m3.GetIndexY(), -3);
-	EXPECT_EQ(m3.GetIndexZ(), 0);
 }
 TEST(TMonom, can_copy_monom)
 {
@@ -82,13 +81,13 @@ TEST(TMonom, operator_assigning_is_correct)
 TEST(TMonom, operator_less_is_correct1)
 {
 	TMonom m1(2, 3, 4, 5);
-	TMonom m2(2, 4, 5, 6);
+	TMonom m2(2, 3, 4, 6);
 	EXPECT_TRUE(m1 < m2);
 }
 TEST(TMonom, operator_less_is_correct2)
 {
 	TMonom m1(2, 3, 4, 5);
-	TMonom m2(2, 4, 5, 6);
+	TMonom m2(2, 3, 4, 6);
 	EXPECT_FALSE(m2 < m1);
 }
 TEST(TMonom, operator_more_is_correct1)

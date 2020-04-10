@@ -1,33 +1,40 @@
-#ifndef __TMONOMIAL_H__
+п»ї#ifndef __TMONOMIAL_H__
 #define __TMONOMIAL_H__
 
 #include <iostream>
 using namespace std;
 
-//КЛАСС МОНОМ (СОСТАВЛЯЮЩАЯ ПОЛИНОМА)
+#define MinIndex 0
+#define MaxIndex 99
+
+//РљР›РђРЎРЎ РњРћРќРћРњ (РЎРћРЎРўРђР’Р›РЇР®Р©РђРЇ РџРћР›РРќРћРњРђ)
 class TMonom
 {
 protected:
-	double coeff;      //коэффициент монома
-	int index[3];      //массив степеней(свертка степней)
+	double coeff;      //РєРѕСЌС„С„РёС†РёРµРЅС‚ РјРѕРЅРѕРјР°
+	int index[3];      //РјР°СЃСЃРёРІ СЃС‚РµРїРµРЅРµР№(СЃРІРµСЂС‚РєР° СЃС‚РµРїРЅРµР№)
 public:
-	//Конструктор
+	//РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 	TMonom(double Mcoeff = 1, int Xindex = 0, int Yindex = 0, int Zindex = 0)
-	{
-		coeff = Mcoeff;
-		index[0] = Xindex;
-		index[1] = Yindex;
-		index[2] = Zindex;
+	{ 
+		if ((Xindex >= MinIndex) && (Xindex <= MaxIndex) && (Yindex >= MinIndex) && (Yindex <= MaxIndex) && (Zindex >= MinIndex) && (Zindex <= MaxIndex))
+		{
+			coeff = Mcoeff;
+			index[0] = Xindex;
+			index[1] = Yindex;
+			index[2] = Zindex;
+		}
+		else throw "Wrong Monom's Degree!";
 	}
-	//Конструктор копирования
+	//РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ
 	TMonom(const TMonom& Mon)
 	{
 		coeff = Mon.coeff;
 		index[0] = Mon.index[0];
 		index[1] = Mon.index[1];
 		index[2] = Mon.index[2];
-	}
-	//Деструктор
+	} 
+	//Р”РµСЃС‚СЂСѓРєС‚РѕСЂ
 	~TMonom()
 	{
 		coeff = 0;
@@ -35,59 +42,61 @@ public:
 		index[1] = 0;
 		index[2] = 0;
 	}
-	//Установить коэффициент
-	void SetCoeff(double Mcoeff)
-	{
+	//РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РєРѕСЌС„С„РёС†РёРµРЅС‚
+	void SetCoeff(double Mcoeff)                 
+	{ 
 		coeff = Mcoeff;
 	}
-	//Получить коэффициент
-	double GetCoeff()
-	{
+	//РџРѕР»СѓС‡РёС‚СЊ РєРѕСЌС„С„РёС†РёРµРЅС‚
+	double GetCoeff() 
+	{ 
 		return coeff;
-	}
-	//Получить индекс X
-	int GetIndexX()
-	{
+	} 
+	//РџРѕР»СѓС‡РёС‚СЊ РёРЅРґРµРєСЃ X
+	int GetIndexX() 
+	{ 
 		return index[0];
-	}
-	//Получить индекс Y
+	} 
+	//РџРѕР»СѓС‡РёС‚СЊ РёРЅРґРµРєСЃ Y
 	int GetIndexY()
 	{
 		return index[1];
 	}
-	//Получить индекс Z
+	//РџРѕР»СѓС‡РёС‚СЊ РёРЅРґРµРєСЃ Z
 	int GetIndexZ()
 	{
 		return index[2];
 	}
-	//Оператор присваивания
-	TMonom& operator=(const TMonom& Mon)
+	//РћРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+	TMonom& operator=(const TMonom &Mon) 
 	{
 		coeff = Mon.coeff;
 		index[0] = Mon.index[0];
 		index[1] = Mon.index[1];
 		index[2] = Mon.index[2];
 		return *this;
-	}
-	//Оператор сравнения (равно)
-	bool operator==(const TMonom& Mon)
-	{
+	} 
+	//РћРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ (СЂР°РІРЅРѕ)
+	bool operator==(const TMonom &Mon) 
+	{ 
 		if ((coeff == Mon.coeff) && (index[0] == Mon.index[0]) && (index[1] == Mon.index[1]) && (index[2] == Mon.index[2]))
 		{
 			return true;
 		}
 		else return false;
 	}
-	//Оператор сравнения (меньше)
-	bool operator<(const TMonom& Mon)
-	{
-		if ((index[0] < Mon.index[0]) || (index[1] < Mon.index[1]) || (index[2] < Mon.index[2]))
+	//РћРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ (РјРµРЅСЊС€Рµ)
+	bool operator<(const TMonom &Mon)
+	{ 
+		int ind = index[2] + index[1] * 100 + index[0] * 10000;
+		int indM= Mon.index[2] + Mon.index[1] * 100 + Mon.index[0] * 10000;
+		if (ind < indM)
 		{
 			return true;
 		}
 		else return false;
-	}
-	//Оператор сравнения (больше)
+	} 
+	//РћРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ (Р±РѕР»СЊС€Рµ)
 	bool operator>(const TMonom& Mon)
 	{
 		if ((*this < Mon) || (*this == Mon))
@@ -96,7 +105,7 @@ public:
 		}
 		else return true;
 	}
-	//Оператор сравнения (меньше или равно)
+	//РћРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ (РјРµРЅСЊС€Рµ РёР»Рё СЂР°РІРЅРѕ)
 	bool operator<=(const TMonom& Mon)
 	{
 		if ((*this < Mon) || (*this == Mon))
@@ -105,8 +114,8 @@ public:
 		}
 		else return false;
 	}
-	//Оператор сравнения (больше или равно)
-	bool operator>=(const TMonom& Mon)
+	//РћРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ (Р±РѕР»СЊС€Рµ РёР»Рё СЂР°РІРЅРѕ)
+	bool operator>=(const TMonom &Mon)
 	{
 		if ((*this > Mon) || (*this == Mon))
 		{
@@ -114,7 +123,7 @@ public:
 		}
 		else return false;
 	}
-	//Подобные мономы
+	//РџРѕРґРѕР±РЅС‹Рµ РјРѕРЅРѕРјС‹
 	bool Similar(const TMonom& Mon)
 	{
 		if ((index[0] == Mon.index[0]) && (index[1] == Mon.index[1]) && (index[2] == Mon.index[2]))
@@ -123,15 +132,15 @@ public:
 		}
 		else return false;
 	}
-	//Сложение мономов
+	//РЎР»РѕР¶РµРЅРёРµ РјРѕРЅРѕРјРѕРІ
 	TMonom operator+(const TMonom& Mon)
 	{
-		//До вызова этого оператора в коде должна быть проверка на подобие!!!!
+		//Р”Рѕ РІС‹Р·РѕРІР° СЌС‚РѕРіРѕ РѕРїРµСЂР°С‚РѕСЂР° РІ РєРѕРґРµ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РїСЂРѕРІРµСЂРєР° РЅР° РїРѕРґРѕР±РёРµ!!!!
 		TMonom res(coeff, index[0], index[1], index[2]);
 		res.coeff = res.coeff + Mon.coeff;
 		return res;
 	}
-	//Умножение мономов
+	//РЈРјРЅРѕР¶РµРЅРёРµ РјРѕРЅРѕРјРѕРІ
 	TMonom operator*(const TMonom& Mon)
 	{
 		TMonom res(coeff, index[0], index[1], index[2]);
@@ -141,29 +150,29 @@ public:
 		res.index[2] = res.index[2] + Mon.index[2];
 		return res;
 	}
-	//Умножение на константу
+	//РЈРјРЅРѕР¶РµРЅРёРµ РЅР° РєРѕРЅСЃС‚Р°РЅС‚Сѓ
 	void MiltConst(const double& val)
 	{
 		coeff = coeff * val;
 	}
-	//Вычисление в точке
+	//Р’С‹С‡РёСЃР»РµРЅРёРµ РІ С‚РѕС‡РєРµ
 	double CalcPoint(const double& x, const double& y, const double& z)
 	{
 		double res = 0;
 		res = coeff * pow(x, index[0]) * pow(y, index[1]) * pow(z, index[2]);
 		return res;
 	}
-
-	//Вывод монома (печать)
+	
+	//Р’С‹РІРѕРґ РјРѕРЅРѕРјР° (РїРµС‡Р°С‚СЊ)
 	friend ostream& operator<<(ostream& out, const TMonom& Mon)
 	{
 		out << Mon.coeff;
 		if (Mon.index[0] != 0) { out << "x^" << Mon.index[0]; }
 		if (Mon.index[1] != 0) { out << "y^" << Mon.index[1]; }
-		if (Mon.index[2] != 0) { out << "z^" << Mon.index[2]; }
+		if (Mon.index[2] != 0) { out << "z^" << Mon.index[2]; }		
 		return out;
 	}
-	//Доступ полинома к методам своих составляющих
+	//Р”РѕСЃС‚СѓРї РїРѕР»РёРЅРѕРјР° Рє РјРµС‚РѕРґР°Рј СЃРІРѕРёС… СЃРѕСЃС‚Р°РІР»СЏСЋС‰РёС…
 	friend class TPolinom;
 };
 

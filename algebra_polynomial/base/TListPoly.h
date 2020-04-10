@@ -1,10 +1,10 @@
-#ifndef _TLISTPOLY_H_
+Ôªø#ifndef _TLISTPOLY_H_
 #define _TLISTPOLY_H_
 
 #include "TMonomial.h"
 #include <iostream>
 
-// À¿—— «¬≈ÕŒ-ÃŒÕŒÃ
+//–ö–õ–ê–°–° –ó–í–ï–ù–û-–ú–û–ù–û–ú
 class TPLink
 {
 public:
@@ -20,7 +20,7 @@ public:
 	}
 };
 
-// À¿—— —œ»—Œ  ÃŒÕŒÃŒ¬
+//–ö–õ–ê–°–° –°–ü–ò–°–û–ö –ú–û–ù–û–ú–û–í
 class TPList
 {
 private:
@@ -48,10 +48,10 @@ public:
 	TMonom GetMonPos(const int pos);
 	TPLink* Find(const int& pos);
 	TPLink* DeleteTheLink(TPLink* p);
-
+	
 	TPList& operator=(const TPList& Plist);
 	bool operator==(const TPList& Plist) const;
-	bool operator!=(const TPList& Plist) const;
+	bool operator!=(const TPList& Plist) const;	
 
 	void SortPList();
 
