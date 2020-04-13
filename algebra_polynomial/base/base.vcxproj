@@ -138,13 +138,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="HTable1.cpp" />
-    <ClCompile Include="HTable2.cpp" />
     <ClCompile Include="interface.cpp" />
     <ClCompile Include="LTableL.cpp" />
     <ClCompile Include="LTableM.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="OTable.cpp" />
     <ClCompile Include="Polinomial.cpp" />
     <ClCompile Include="Stack.cpp" />
     <ClCompile Include="TListPoly.cpp" />
