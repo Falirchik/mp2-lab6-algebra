@@ -6,6 +6,8 @@
 #include <sstream>
 #include "stack.h"
 #include "HTable1.h"
+#include "LTableM.h"
+#include "YTable.h"
 #include "Polynomial.h"
 
 #define MaxSizeString 100
@@ -14,8 +16,8 @@ using namespace std;
 
 struct TablFunc     //таблица операций
 {
-	char func[7];
-	int priority[7];
+	char func[6];
+	int priority[6];
 	int count;
 	TablFunc()
 	{
@@ -24,7 +26,7 @@ struct TablFunc     //таблица операций
 		func[2] = '+';	priority[2] = 1;
 		func[3] = '-';	priority[3] = 1;
 		func[4] = '*';	priority[4] = 2;
-		func[6] = '=';	priority[6] = 0;
+		func[5] = '=';	priority[5] = 0;
 	}
 }; 
 
@@ -41,23 +43,30 @@ class TPostfix
 	bool ProvCountSk();               //проверка скобок
 	bool ProvInfix();                 //общая проверка инфиксной формы
 	void AddVarMas();                 //выделение переменных и добавление в массив
-	void DeleteSpaces(string s);   //удаление пробелов
+	void DeleteSpaces(string& s);   //удаление пробелов
 public:
 	//Констуртор
-	TPostfix(string inf = "a+b");
-	string ToPostfix();
-	//Polynomial CalculatePolynom(THashTable<Polynomial> TableOfPolynom);
-	double Calculate(); 
-	//double Calculate(THashTable<Polynomial> TableOfPolynom);
-	string* GetNameOfPolynom();
-	//size_t GetNumOfPolynominals();	
+	TPostfix(string inf);
+	void ToPostfix();
 	string GetInfix() { return infix; }
 	string GetPostfix() { return postfix; }
-	string* GetArrVar() { return var; }
+	string GetArrVarPos(size_t pos) {
+		if (pos >= 0 && pos < sizevar)
+		{
+			return var[pos];
+		}
+		else throw "Wrong pos of var!";
+	}
 	size_t GetCountOfVar() { return sizevar; }
-	
-	
-	//double Calculate(); // Ввод переменных, вычисление по постфиксной форме
+
+	//Ввод значений всех переменных (для double)
+	double TPostfix::EnterValueandCalculate(); 
+	//Вычисление (для полиномов) Хэш таблица
+	Polynomial TPostfix::CalculatePolynomH(THashTable<Polynomial> TableOfPolynom);
+	//Ввод значений всех переменных (для полиномов) Линейная таблица
+	Polynomial TPostfix::CalculatePolynomL(TLMTable<Polynomial> TableOfPolynom);
+	//Ввод значений всех переменных (для полиномов) Упорядоченная таблица
+	Polynomial TPostfix::CalculatePolynomO(TOrderedTable<Polynomial> TableOfPolynom);
 };
 
 #endif

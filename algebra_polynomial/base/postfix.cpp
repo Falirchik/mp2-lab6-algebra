@@ -1,20 +1,20 @@
-#include "postfix.h"
+п»ї#include "postfix.h"
 #include "stack.h"
 
-bool TPostfix::ProvWrongSymb()              //проверка на недопустимые символы
+bool TPostfix::ProvWrongSymb()              //РїСЂРѕРІРµСЂРєР° РЅР° РЅРµРґРѕРїСѓСЃС‚РёРјС‹Рµ СЃРёРјРІРѕР»С‹
 {
 	string can_use = "()+_*1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.";
 	size_t size= infix.size();
 	for (size_t i = 0; i < size; i++)
 	{
-		if (can_use.find(infix[i]) == string::npos) //символ в infix не нашелся среди допустимых
+		if (can_use.find(infix[i]) == string::npos) //СЃРёРјРІРѕР» РІ infix РЅРµ РЅР°С€РµР»СЃСЏ СЃСЂРµРґРё РґРѕРїСѓСЃС‚РёРјС‹С…
 		{
-			return false;
+			throw "Wrong symbol in infix!";
 		}
 	}
 	return true;
 }
-bool TPostfix::ProvCountVarOp()            //проверка соответсвия количества переменных и операций
+bool TPostfix::ProvCountVarOp()            //РїСЂРѕРІРµСЂРєР° СЃРѕРѕС‚РІРµС‚СЃРІРёСЏ РєРѕР»РёС‡РµСЃС‚РІР° РїРµСЂРµРјРµРЅРЅС‹С… Рё РѕРїРµСЂР°С†РёР№
 {
 	string infTemp = " " + infix + " ";
 	string oper = "+-*";
@@ -22,7 +22,7 @@ bool TPostfix::ProvCountVarOp()            //проверка соответсвия количества пер
 	size_t size = infTemp.length();
 	for (size_t i = 0; i < size; i++)
 	{
-		if ((oper.find(infTemp[i])!=string::npos))//символ операция
+		if ((oper.find(infTemp[i])!=string::npos))//СЃРёРјРІРѕР» РѕРїРµСЂР°С†РёСЏ
 		{
 			if ((namevar.find(infTemp[i - 1]) != string::npos) && (namevar.find(infTemp[i + 1]) != string::npos))
 			{
@@ -32,242 +32,606 @@ bool TPostfix::ProvCountVarOp()            //проверка соответсвия количества пер
 			{
 				continue; // ) oper (
 			}
+			else if ((namevar.find(infTemp[i - 1]) != string::npos) && (infTemp[i + 1] == '('))
+			{
+				continue; // var oper (
+			}
+			else if ((infTemp[i - 1] == ')') &&(namevar.find(infTemp[i + 1]) != string::npos))
+			{
+				continue; // ) oper var
+			}
 			else
 			{
-				return false;
+				throw "Mistake with operations and var!";
 			}
 		}
 	}
 	return true;
 }
-bool TPostfix::ProvCountSk()               //проверка скобок
+bool TPostfix::ProvCountSk()               //РїСЂРѕРІРµСЂРєР° СЃРєРѕР±РѕРє
 {
-
+	string Inftemp = infix;
+	if ((Inftemp.find('(') == string::npos) && (Inftemp.find(')') == string::npos))
+	{
+		return true;
+	}
+	else {
+		if ((Inftemp.find("()")) >= 0 && (Inftemp.find("()") <= Inftemp.length()))
+		{
+			throw "Find is ''()'' (empty skob)";
+		}
+		while ((Inftemp.find('(') != std::string::npos) || (Inftemp.find(')') != std::string::npos))
+		{
+			if (Inftemp.find('(') >= 0 && Inftemp.find('(') <= Inftemp.length())
+			{
+				if (Inftemp.find(')') == std::string::npos)
+				{
+					throw "Incorrect number of brackets";
+				}
+				else
+				{
+					Inftemp[Inftemp.find('(')] = ' ';
+					Inftemp[Inftemp.find(')')] = ' ';
+				}
+			}
+			else
+			{
+				throw "Incorrect number of brackets";				
+			}
+		}
+		return true;
+	}
 }
-bool TPostfix::ProvInfix()                //общая проверка инфиксной формы
+bool TPostfix::ProvInfix()                //РѕР±С‰Р°СЏ РїСЂРѕРІРµСЂРєР° РёРЅС„РёРєСЃРЅРѕР№ С„РѕСЂРјС‹
 {
-
+	ProvWrongSymb();
+	ProvCountVarOp();
+	ProvCountSk();
+	string wrong0 = ")*-+";
+	string wrongS = "(*-+";
+	int size = infix.size();
+	if (wrong0.find(infix[0]) != string::npos)    //РёРЅС„РёРєСЃ РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃ СЃРёРјРІРѕР»Р°(РѕРїРµСЂР°С†РёРё)
+	{
+		throw "First symbol is operations";
+	}
+	if (wrongS.find(infix[size - 1]) != string::npos)
+	{
+		throw "Last symbol is operations";
+	}
+	return true;
 }
-void TPostfix::AddVarMas()                //выделение переменных и добавление в массив
+void TPostfix::AddVarMas()                //РІС‹РґРµР»РµРЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С… Рё РґРѕР±Р°РІР»РµРЅРёРµ РІ РјР°СЃСЃРёРІ
 {
-
+	string Itemp = infix;
+	size_t size = 0;
+	ProvInfix();  //РїСЂРѕРІРµСЂРєР° РЅР° РЅРµРґРѕРїСѓСЃС‚РёРјС‹Рµ СЃРёРјРІРѕР»С‹, РЅР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ РІС‹СЂР°Р¶РµРЅРёСЏ Рё РЅР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ СЃРєРѕР±РѕРє Рё РґСЂСѓРіРѕРµ
+	Itemp = Itemp + "=";
+	string op = "+-*=";
+	for (int i = 0; i < Itemp.size(); i++)
+	{
+		if (op.find(Itemp[i]) != string::npos)
+		{
+			size++;
+		}
+	}
+	var = new string[size];
+	for (int i = 0; i < size; i++)
+	{
+		var[i] = "";
+	}
+	sizevar = size;
+	int k = 0;
+	for (int i = 0; i < Itemp.size(); i++)
+	{
+		if (op.find(Itemp[i]) != string::npos)
+		{
+			Itemp[i] = ' ';
+		}
+	}
+	while ((Itemp.find('(') != string::npos) || (Itemp.find(')') != string::npos))
+	{
+		if (Itemp.find('(') != string::npos)
+		{
+			Itemp.erase(Itemp.find('('), 1);
+		}
+		if (Itemp.find(')') != string::npos)
+		{
+			Itemp.erase(Itemp.find(')'), 1);
+		}
+	}
+	while (Itemp.size() != 0)
+	{
+		if (Itemp.find(' ') != string::npos)
+		{
+			size_t pos = Itemp.find(' ');
+			for (int j = 0; j < pos; j++)
+			{
+				var[k] = var[k] + Itemp[j];
+			}
+			Itemp.erase(0, pos + 1);
+			k++;
+		}
+	}
 }
-void TPostfix::DeleteSpaces(string s)   //удаление пробелов
+void TPostfix::DeleteSpaces(string& s)   //СѓРґР°Р»РµРЅРёРµ РїСЂРѕР±РµР»РѕРІ
 {
-
+	for (size_t i = 0; i < s.size(); i++)
+	{
+		while (s[i] == ' ')
+		{
+			s.erase(i, 1);
+		}
+	}
 }
-TPostfix::TPostfix(string inf = "a+b")
+TPostfix::TPostfix(string inf)   //РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 {
 	DeleteSpaces(inf);
 	infix = inf;
 	ProvInfix();
 	AddVarMas();
 }
-string  TPostfix::ToPostfix()
-{
 
-}
-/*Polynomial  TPostfix::CalculatePolynom(THashTable<Polynomial> TableOfPolynom)
+void  TPostfix::ToPostfix()
 {
-
-}*/
-double  TPostfix::Calculate()
-{
-
-}
-/*
-double  TPostfix::Calculate(THashTable<Polynomial> TableOfPolynom)
-{
-
-}*/
-string* TPostfix::GetNameOfPolynom()
-{
-
-}
-/*
-string TPostfix::ToPostfix()
-{
+	string itemp = infix;
+	postfix = "";
+	itemp = itemp + "=";
 	TStack<char> opStack(MaxStackSize);
-	string operacii = "+-()";
-	int len = infix.length();
-	for (int i = 0; i < len; i++)//Проходимся по infix
+	int i = 0;
+	while (itemp.size() != 0)
 	{
-		if (operacii.find(infix[i]) == string::npos)//если 1 символ не операция
+		while (i < sizevar)
 		{
-			postfix += infix[i];
-		}
-		if ((infix[i] >= '0') && (infix[i] <= '9'))//Если i элемент цифра
-		{
-			if (i != len)
+			if (itemp.find(var[i]) == 0)
 			{
-				if ((infix[i + 1] < '0') || (infix[i + 1] > '9'))//И i+1 не цифра
-					postfix += ':';
+				postfix = postfix + var[i] + ' ';
+				itemp.erase(0, var[i].size());
+				i++;
+				break;
 			}
-			else
-				postfix += ':';
+			else break;
+			i++;
 		}
-		if (infix[i] == '(')
+		if (itemp[0] == '(')
 		{
-			opStack.push(infix[i]);
+			opStack.push('(');
+			itemp.erase(0, 1);
 		}
-		if (infix[i] == ')')
+		if ((itemp[0] == operat.func[2]) || (itemp[0] == operat.func[3]) || (itemp[0] == operat.func[4]))
 		{
-			char temp = opStack.pop();
-			while (temp != '(')
+			while (true)
 			{
-				postfix += temp;
-				temp = opStack.pop();
-			}
-		}
-		if (Operandy.find(infix[i]) != string::npos)
-		{
-			if (opStack.empty() == true)
-			{
-				opStack.push(infix[i]);
-			}
-			else
-			{
-				int index2 = Operandy.find(infix[i]);
-				while (opStack.empty() == false)
+				if (opStack.empty() == true)
 				{
-					char temp = opStack.pop();
-					if (temp == '(')
-					{
-						opStack.push(temp);
-						break;
-					}
-					int index1 = Operandy.find(temp);
-					if (Prioritet[index2] <= Prioritet[index1])
-						postfix += temp;
-					else
-					{
-						opStack.push(temp);
-						break;
-					}
+					opStack.push(itemp[0]);
+					break;
 				}
-				opStack.push(infix[i]);
-			}
-		}
-	}
-	while (opStack.empty() == false)
-	{
-		postfix += opStack.pop();
-	}
-	return postfix;
-}
-
-double TPostfix::Calculate()
-{
-	if (postfix.length() == 0)
-	{
-		ToPostfix();//Создать постфиксную форму
-	}
-	int length = postfix.length();
-	TStack<double> res(MaxStackSize);
-	string nameForm;
-	double* form = new double[length];
-	for (int i = 0; i < length; i++)
-	{
-		if (Operandy.find(postfix[i]) == string::npos)//Символ не операция
-		{
-			double p;//Значение предполагаемой переменной(вводится ниже)
-			if ((postfix[i] < '0') || (postfix[i] > '9'))//Символ не цифра
-			{
-				//Символ переменная
-				if (nameForm.find(postfix[i]) == string::npos)//Встретилась первый раз
+				int iIn = 2;
+				int iSt = 2;
+				while (iIn < 5)
 				{
-					nameForm += postfix[i];
-					cout << "Введите значение переменной - " << postfix[i] << endl;
-					cin >> p;
-					form[nameForm.length() - 1] = p;//записали в массив заначений
+					if (itemp[0] == operat.func[iIn])
+						break;
+					else
+						iIn++;
+				}
+				while (iSt < 5)
+				{
+					if (opStack.getvaltop() == operat.func[iSt])
+						break;
+					else
+						iSt++;
+				}
+				if (operat.priority[iIn] <= operat.priority[iSt])
+				{
+					postfix = postfix + opStack.pop() + ' ';
 				}
 				else
 				{
-					p = form[nameForm.find(postfix[i])];//Уже встречалась
+					opStack.push(itemp[0]);
+					break;
 				}
+
 			}
-			else//Символ цифра
-			{
-				string number;
-				while (postfix[i] != ':')//Ищем конец числа
-				{
-					number += postfix[i];
-					i++;
-				}
-				p = stoi(number);//Преобразование в целое число строки
-			}
-			res.push(p);//Положили переменную или число в стек
+			itemp.erase(0, 1);
 		}
-		else//Символ операция
+		if (itemp[0] == ')')
 		{
-			double zn1, zn2, Res;
-			//Взяли из стека 2 последних элемента
-			zn2 = res.pop();
-			zn1 = res.pop();
-			switch (postfix[i])//Какая это операция??
+			while (opStack.getvaltop() != '(')
 			{
-			case '+': Res = zn1 + zn2; break;
-			case '-': Res = zn1 - zn2; break;
-			case '*': Res = zn1 * zn2; break;
-			case '/': Res = zn1 / zn2; break;
+				postfix = postfix + opStack.pop() + ' ';
 			}
-			res.push(Res);//Положили в стек результат операции
+			opStack.pop();
+			itemp.erase(0, 1);
+		}
+		if (itemp[0] == '=')
+		{
+			while (opStack.empty() != true)
+			{
+				postfix = postfix + opStack.pop() + ' ';
+			}
+			itemp.erase(0, 1);
 		}
 	}
-	delete[] form;//Удаляем массив значений
-	return res.pop();//Возвращаем последний элемент стека = результату всего выражения
 }
-*/
-/*bool TPostfix::StringIsRight(string s)
+double TPostfix::EnterValueandCalculate() //Р’РІРѕРґ Р·РЅР°С‡РµРЅРёР№ РІСЃРµС… РїРµСЂРµРјРµРЅРЅС‹С… (РґР»СЏ double)
 {
-	string nevozmozhno = "!@#^&.,<>{}[]|=_?";//Символы, которых не должно быть в выражении
-	int ckob = 0, k = 0, countOperation = 0;
-	int length = s.length();
-	if ((Operandy.find(s[0]) != string::npos) || (Operandy.find(s[length - 1]) != string::npos))
+	cout << "Enter the arguments:" << endl;
+	double* varV = new double[sizevar];
+	for (int i = 0; i < sizevar; i++)
 	{
-		return false;//Выражение началось или закончилось с операнда
-	}
-	for (int i = 0; i < length; i++)//Начинаем проверку вводных данных
-	{
-		if (nevozmozhno.find(s[i]) != string::npos)//Проверка символов строки s на невозможные символы
+
+		string ce = "0123456789.";
+		int j = 0;
+		while (j < var[i].length())
 		{
-			return false;//Нашли 
+			if (ce.find(var[i][j]) != std::string::npos)
+				j++;
+			else
+				break;
 		}
-		//Проверка на закрытие скобок
-		if (s[i] == '(')
+		if (j == var[i].length())
 		{
-			ckob++;
-		}
-		if (s[i] == ')')
-		{
-			ckob--;
-		}
-		//Счетчик переменных
-		if ((s[i] - 'a' >= 0) && (s[i] - 'a' <= 26))
-		{
-			k++;
+			std::stringstream temp(var[i]);
+			temp >> varV[i];
 		}
 		else
 		{
-			k = 0;
+			size_t k = 0;
+			while (k < i && i != 0)
+				if (var[i] == var[k])
+				{
+					varV[i] = varV[k];
+					break;
+				}
+				else
+					k++;
+			if (k == i || i == 0)
+			{
+				cout << var[i] << " = ";
+				cin >> varV[i];
+				string vT = std::to_string(varV[i]);
+				string c = "0123456789.";
+				if (c.find(vT) != std::string::npos)
+					throw "Permission incorrect value";
+				cout << endl;
+			}
+			else
+				continue;
 		}
-		//Счетчик операций (символов)
-		if (Operandy.find(s[i]) != string::npos)
+	}
+	string post = postfix;
+	for (int i = 0; i < post.size(); i++)
+	{
+		if (post[i] == ' ')
 		{
-			countOperation++;
+			post.erase(i, 1);
+		}
+	}
+	double tempResult = 0;
+	double result = 0;
+	int z = 0;
+	TStack<double> varStack(sizevar);
+	while (post.length() != 0)
+	{
+		while (z < sizevar)
+		{
+			if (post.find(var[z]) == 0)
+			{
+				varStack.push(varV[z]);
+				post.erase(0, var[z].length());
+				z++;
+				break;
+			}
+			else
+				break;
+		}
+		if (post[0] == '*')
+		{
+			double temp = varStack.pop();
+			tempResult = varStack.pop() * temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+		if (post[0] == '+')
+		{
+			double temp = varStack.pop();
+			tempResult = varStack.pop() + temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+
+		if (post[0] == '-')
+		{
+			double temp = varStack.pop();
+			tempResult = varStack.pop() - temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+	}
+	result = varStack.pop();
+	res = result;
+	return res;
+}
+Polynomial TPostfix::CalculatePolynomH(THashTable<Polynomial> TableOfPolynom) 
+{
+	THashTable<Polynomial> varP = TableOfPolynom;
+	for (int i = 0; i < sizevar; i++)
+	{
+
+		string ce = "0123456789.";
+		int j = 0;
+		while (j < var[i].length())
+		{
+			if (ce.find(var[i][j]) != std::string::npos)
+				j++;
+			else
+				break;
+		}
+		if (j == var[i].length())
+		{
+			Polynomial p;
+			varP.GetPolinominal(var[i]) = p;
 		}
 		else
 		{
-			countOperation = 0;
-		}
-		if ((k > 1) || (countOperation > 1))//Переменные или операции идут подряд, т.е. ab+-
-		{
-			return false;
+			size_t k = 0;
+			while (k < i && i != 0)
+				if (var[i] == var[k])
+				{
+					varP.GetPolinominal(var[i]) = varP.GetPolinominal(var[k]);
+					break;
+				}
+				else
+					k++;
+			if (k == i || i == 0)
+			{
+				Polynomial _p;
+				varP.GetPolinominal(var[i]) = _p;
+			}
+			else
+				continue;
 		}
 	}
-	if (ckob != 0)//Ошибка в скобках
+	string post = postfix;
+	for (int i = 0; i < post.size(); i++)
 	{
-		return false;
+		if (post[i] == ' ')
+		{
+			post.erase(i, 1);
+		}
 	}
-	return true;
-}*/
+	Polynomial tempResult;
+	Polynomial result;
+	TStack<Polynomial> varStack(sizevar);
+	int i = 0;
+	while (post.length() != 0)
+	{
+		while (i < sizevar)
+		{
+			if (post.find(var[i]) == 0)
+			{
+				varStack.push(varP.GetPolinominal(var[i]));
+				post.erase(0, var[i].length());
+				i++;
+				break;
+			}
+			else
+				break;
+		}
+
+		if (post[0] == '*')
+		{
+			Polynomial temp = varStack.pop();
+			tempResult = varStack.pop() * temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+
+		if (post[0] == '+')
+		{
+			Polynomial temp = varStack.pop();
+			tempResult = varStack.pop() + temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+
+		if (post[0] == '-')
+		{
+			Polynomial temp = varStack.pop();
+			tempResult = varStack.pop() - temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+	}
+	result = varStack.pop();
+	return result;
+}
+Polynomial TPostfix::CalculatePolynomL(TLMTable<Polynomial> TableOfPolynom)  //Р’РІРѕРґ Р·РЅР°С‡РµРЅРёР№ РІСЃРµС… РїРµСЂРµРјРµРЅРЅС‹С… (РґР»СЏ РїРѕР»РёРЅРѕРјРѕРІ) Р›РёРЅРµР№РЅР°СЏ С‚Р°Р±Р»РёС†Р°
+{
+	TLMTable<Polynomial> varP = TableOfPolynom;
+	for (int i = 0; i < sizevar; i++)
+	{
+
+		string ce = "0123456789.";
+		int j = 0;
+		while (j < var[i].length())
+		{
+			if (ce.find(var[i][j]) != std::string::npos)
+				j++;
+			else
+				break;
+		}
+		if (j == var[i].length())
+		{
+			Polynomial p;
+			varP.get_value(var[i]) = p;
+		}
+		else
+		{
+			size_t k = 0;
+			while (k < i && i != 0)
+				if (var[i] == var[k])
+				{
+					varP.get_value(var[i]) = varP.get_value(var[k]);
+					break;
+				}
+				else
+					k++;
+			if (k == i || i == 0)
+			{
+				Polynomial _p;
+				varP.get_value(var[i]) = _p;
+			}
+			else
+				continue;
+		}
+	}
+	string post = postfix;
+	for (int i = 0; i < post.size(); i++)
+	{
+		if (post[i] == ' ')
+		{
+			post.erase(i, 1);
+		}
+	}
+	Polynomial tempResult;
+	Polynomial result;
+	TStack<Polynomial> varStack(sizevar);
+	int i = 0;
+	while (post.length() != 0)
+	{
+		while (i < sizevar)
+		{
+			if (post.find(var[i]) == 0)
+			{
+				varStack.push(varP.get_value(var[i]));
+				post.erase(0, var[i].length());
+				i++;
+				break;
+			}
+			else
+				break;
+		}
+
+		if (post[0] == '*')
+		{
+			Polynomial temp = varStack.pop();
+			tempResult = varStack.pop() * temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+
+		if (post[0] == '+')
+		{
+			Polynomial temp = varStack.pop();
+			tempResult = varStack.pop() + temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+
+		if (post[0] == '-')
+		{
+			Polynomial temp = varStack.pop();
+			tempResult = varStack.pop() - temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+	}
+	result = varStack.pop();
+	return result;
+}
+Polynomial TPostfix::CalculatePolynomO(TOrderedTable<Polynomial> TableOfPolynom)  //Р’РІРѕРґ Р·РЅР°С‡РµРЅРёР№ РІСЃРµС… РїРµСЂРµРјРµРЅРЅС‹С… (РґР»СЏ РїРѕР»РёРЅРѕРјРѕРІ) РЈРїРѕСЂСЏРґРѕС‡РµРЅРЅР°СЏ С‚Р°Р±Р»РёС†Р°
+{
+	TOrderedTable<Polynomial> varP = TableOfPolynom;
+	for (int i = 0; i < sizevar; i++)
+	{
+
+		string ce = "0123456789.";
+		int j = 0;
+		while (j < var[i].length())
+		{
+			if (ce.find(var[i][j]) != std::string::npos)
+				j++;
+			else
+				break;
+		}
+		if (j == var[i].length())
+		{
+			Polynomial p;
+			varP.GetValue(var[i]) = p;
+		}
+		else
+		{
+			size_t k = 0;
+			while (k < i && i != 0)
+				if (var[i] == var[k])
+				{
+					varP.GetValue(var[i]) = varP.GetValue(var[k]);
+					break;
+				}
+				else
+					k++;
+			if (k == i || i == 0)
+			{
+				Polynomial _p;
+				varP.GetValue(var[i]) = _p;
+			}
+			else
+				continue;
+		}
+	}
+	string post = postfix;
+	for (int i = 0; i < post.size(); i++)
+	{
+		if (post[i] == ' ')
+		{
+			post.erase(i, 1);
+		}
+	}
+	Polynomial tempResult;
+	Polynomial result;
+	TStack<Polynomial> varStack(sizevar);
+	int i = 0;
+	while (post.length() != 0)
+	{
+		while (i < sizevar)
+		{
+			if (post.find(var[i]) == 0)
+			{
+				varStack.push(varP.GetValue(var[i]));
+				post.erase(0, var[i].length());
+				i++;
+				break;
+			}
+			else
+				break;
+		}
+
+		if (post[0] == '*')
+		{
+			Polynomial temp = varStack.pop();
+			tempResult = varStack.pop() * temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+
+		if (post[0] == '+')
+		{
+			Polynomial temp = varStack.pop();
+			tempResult = varStack.pop() + temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+
+		if (post[0] == '-')
+		{
+			Polynomial temp = varStack.pop();
+			tempResult = varStack.pop() - temp;
+			varStack.push(tempResult);
+			post.erase(0, 1);
+		}
+	}
+	result = varStack.pop();
+	return result;
+}

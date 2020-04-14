@@ -83,12 +83,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="test_htable1.cpp" />
+    <ClCompile Include="test_ltablem.cpp" />
     <ClCompile Include="test_main.cpp" />
     <ClCompile Include="test_postfix.cpp" />
     <ClCompile Include="test_stack.cpp" />
     <ClCompile Include="test_tlist.cpp" />
     <ClCompile Include="test_tmonomial.cpp" />
     <ClCompile Include="test_tpolynomial.cpp" />
+    <ClCompile Include="test_ytable.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

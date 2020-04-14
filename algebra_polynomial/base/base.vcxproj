@@ -83,9 +83,9 @@
   <ItemGroup>
     <ClInclude Include="HTable1.h" />
     <ClInclude Include="HTable2.h" />
+    <ClInclude Include="interface.h" />
     <ClInclude Include="LTableL.h" />
     <ClInclude Include="LTableM.h" />
-    <ClInclude Include="OrderTable.h" />
     <ClInclude Include="Polynomial.h" />
     <ClInclude Include="postfix.h" />
     <ClInclude Include="stack.h" />
@@ -95,6 +95,7 @@
     <ClInclude Include="YTable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="interface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Polynomial.cpp" />
     <ClCompile Include="postfix.cpp" />
