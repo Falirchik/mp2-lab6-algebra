@@ -5,23 +5,23 @@ using namespace std;
 
 
 
-template <typename Key, typename Val> class AvlTree {//класс таблица-АВЛ-дерево
-	Key key;										//ключ
-	Val value;										//значение
-	int balance;									//баланс
-	AvlTree <Key, Val>* left;						//указатель налево
-	AvlTree <Key, Val>* right;						// -//- направо
-	bool empty;										//заполнены ключ, значение?
+template <typename Key, typename Val> class AvlTree {//ГЄГ«Г Г±Г± ГІГ ГЎГ«ГЁГ¶Г -ГЂГ‚Г‹-Г¤ГҐГ°ГҐГўГ®
+	Key key;										//ГЄГ«ГѕГ·
+	Val value;										//Г§Г­Г Г·ГҐГ­ГЁГҐ
+	int balance;									//ГЎГ Г«Г Г­Г±
+	AvlTree <Key, Val>* left;						//ГіГЄГ Г§Г ГІГҐГ«Гј Г­Г Г«ГҐГўГ®
+	AvlTree <Key, Val>* right;						// -//- Г­Г ГЇГ°Г ГўГ®
+	bool empty;										//Г§Г ГЇГ®Г«Г­ГҐГ­Г» ГЄГ«ГѕГ·, Г§Г­Г Г·ГҐГ­ГЁГҐ?
 	
 public:
-		AvlTree() {										//пустое деревко
+		AvlTree() {										//ГЇГіГ±ГІГ®ГҐ Г¤ГҐГ°ГҐГўГЄГ®
 		empty = true;
 		left = nullptr;
 		right = nullptr;
 		balace = 0;
 	}
 
-	AvlTree(Key _key, Val _value) {					//создание корня
+	AvlTree(Key _key, Val _value) {					//Г±Г®Г§Г¤Г Г­ГЁГҐ ГЄГ®Г°Г­Гї
 		empty = false;
 		key = _key;
 		value = _value;
@@ -29,7 +29,7 @@ public:
 		balance = 0;
 	}
 
-	int Add(Key _key, Val _value) {					//добавление узла. Возвращает, изменился ли баланс
+	int Add(Key _key, Val _value) {					//Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГіГ§Г«Г . Г‚Г®Г§ГўГ°Г Г№Г ГҐГІ, ГЁГ§Г¬ГҐГ­ГЁГ«Г±Гї Г«ГЁ ГЎГ Г«Г Г­Г±
 		if (empty) {
 			key = _key;
 			value = _value;
@@ -37,7 +37,7 @@ public:
 			return 0;
 		}
 		if (_key == key)
-			throw "Уже существует";
+			throw "Г“Г¦ГҐ Г±ГіГ№ГҐГ±ГІГўГіГҐГІ";
 		int b = balance;
 		if (_key > key) {
 			if (right != nullptr) {
@@ -65,8 +65,8 @@ public:
 		else return 0;
 	}
 
-	void TurnAround() {											//нормализация баланса. Если баланс неравномерный - разворачиваем узел так, 
-		if (balance == 2) {										//чтобы количество потомков справа и слева не отличалось больше, чем на 1
+	void TurnAround() {											//Г­Г®Г°Г¬Г Г«ГЁГ§Г Г¶ГЁГї ГЎГ Г«Г Г­Г±Г . Г…Г±Г«ГЁ ГЎГ Г«Г Г­Г± Г­ГҐГ°Г ГўГ­Г®Г¬ГҐГ°Г­Г»Г© - Г°Г Г§ГўГ®Г°Г Г·ГЁГўГ ГҐГ¬ ГіГ§ГҐГ« ГІГ ГЄ, 
+		if (balance == 2) {										//Г·ГІГ®ГЎГ» ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЇГ®ГІГ®Г¬ГЄГ®Гў Г±ГЇГ°Г ГўГ  ГЁ Г±Г«ГҐГўГ  Г­ГҐ Г®ГІГ«ГЁГ·Г Г«Г®Г±Гј ГЎГ®Г«ГјГёГҐ, Г·ГҐГ¬ Г­Г  1
 			if (right->balance >= 0) {
 				Key t_key = key;
 				Val t_value = value;
@@ -136,18 +136,18 @@ public:
 		}
 	}
 
-	typename AvlTree<Key, Val>* SearchNode(Key _key) { //поиск узла по ключу
+	typename AvlTree<Key, Val>* SearchNode(Key _key) { //ГЇГ®ГЁГ±ГЄ ГіГ§Г«Г  ГЇГ® ГЄГ«ГѕГ·Гі
 		AvlTree<Key, Val>* node = this;
 		while (true) {
 			if (node == nullptr)
-				throw "Не найден";
+				throw "ГЌГҐ Г­Г Г©Г¤ГҐГ­";
 			if (node->key == _key) return node;
 			if (node->key < _key)	node = node->right;
 			else node = node->left;
 		}
 	}
 
-	int Delete(Key _key, AvlTree < Key, Val)* parent = nullptr){	//удаление узла. Перемещение по дереву по ключу. При прохождении меняем баланс//пока не дошли до нужного узла, перемещаем, пока оба потомка не nullptr
+	int Delete(Key _key, AvlTree < Key, Val)* parent = nullptr){	//ГіГ¤Г Г«ГҐГ­ГЁГҐ ГіГ§Г«Г . ГЏГҐГ°ГҐГ¬ГҐГ№ГҐГ­ГЁГҐ ГЇГ® Г¤ГҐГ°ГҐГўГі ГЇГ® ГЄГ«ГѕГ·Гі. ГЏГ°ГЁ ГЇГ°Г®ГµГ®Г¦Г¤ГҐГ­ГЁГЁ Г¬ГҐГ­ГїГҐГ¬ ГЎГ Г«Г Г­Г±//ГЇГ®ГЄГ  Г­ГҐ Г¤Г®ГёГ«ГЁ Г¤Г® Г­ГіГ¦Г­Г®ГЈГ® ГіГ§Г«Г , ГЇГҐГ°ГҐГ¬ГҐГ№Г ГҐГ¬, ГЇГ®ГЄГ  Г®ГЎГ  ГЇГ®ГІГ®Г¬ГЄГ  Г­ГҐ nullptr
 
 	int b = balance;
 	if (key == _key) {
@@ -176,7 +176,7 @@ public:
 					balance -= right->Remove(_key, this);
 				}
 			}
-			else {												//КРАСНИт!
+			else {												//ГЉГђГЂГ‘ГЌГ€ГІ!
 				if (left != nullptr) {
 					AvlTree<Key, Val>*t_Node = left;
 					while (t_Node->right != nullptr) {
@@ -200,7 +200,7 @@ public:
 				TurnAround();
 			}
 			else {
-				throw "Не найден";
+				throw "ГЌГҐ Г­Г Г©Г¤ГҐГ­";
 			}
 		}
 		else {
@@ -209,7 +209,7 @@ public:
 				TurnAround();
 			}
 			else {
-				throw "Не найден";
+				throw "ГЌГҐ Г­Г Г©Г¤ГҐГ­";
 			}
 		}
 	}
@@ -219,16 +219,16 @@ public:
 	else return 0;
 	} 
 
-	void Print(AvlTree <Key, Val>* _tree, int level) {		//вывод дерева
+	void Print(AvlTree <Key, Val>* _tree, int level) {		//ГўГ»ГўГ®Г¤ Г¤ГҐГ°ГҐГўГ 
 		if (_tree) {
-			PrintTree(_tree->left, level + 1);
+			Print(_tree->left, level + 1);
 			for (int i = 0; i < level; i++)
 				cout << "   ";
 			cout << _tree->key << endl;
-			PrintTree(p->right, level + 1);
+			Print(p->right, level + 1);
 		}
 	}
 
-	~AvlTree(){}			//деструктор
+	~AvlTree(){}			//Г¤ГҐГ±ГІГ°ГіГЄГІГ®Г°
 
-};  //И ТУТ ТОЖЕ!!! что тебе на конце комментария не нравится? 
+};  //Г€ Г’Г“Г’ Г’ГЋГ†Г…!!! Г·ГІГ® ГІГҐГЎГҐ Г­Г  ГЄГ®Г­Г¶ГҐ ГЄГ®Г¬Г¬ГҐГ­ГІГ Г°ГЁГї Г­ГҐ Г­Г°Г ГўГЁГІГ±Гї? 
