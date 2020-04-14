@@ -1,155 +1,152 @@
-#pragma once
-#include <iostream>
-#include <cmath>
+#ifndef _HTABLE1_H_ 
+#define _HTABLE1_H_
+#include "Polynomial.h"
 
-#define MAX_SIZE 10000
-
-using namespace std;
+#define MaxSizeOfTableH 36
 
 template <class T>
-struct TLine
+struct THashLine
 {
-	string key;								//
+	size_t numOfLine;
+	std::string nameOfLine;
 	T value;
-	TLine<T>* pnext;
-	int number_of_line;
-};
 
+	THashLine<T>* pNextLine;
+	THashLine()
+	{
+		numOfLine = NULL;
+	}
+};
 template <class T>
 class THashTable
 {
-private:
+	THashLine<T> line[MaxSizeOfTableH];
+	size_t countOfLine;
 
-	TLine<T> line[MAX_SIZE];
-	int count;
-
-	int In_Hash(string _key)
+	size_t Hash(std::string _nameOfLine)
 	{
-		return ((int)(_key[0]) - 48);			// преобразуем первую букву ключа в число, учитывая, что буквы начинаются с 48
+		return ((int)(_nameOfLine[0]) - 48);
 	}
-
 public:
 	THashTable()
 	{
-		count = 0;
+		countOfLine = NULL;
 	}
-
-	bool Is_Empty()												//проверка на пустоту
+	bool Is_Full()
 	{
-		if (count == 0)
+		return (countOfLine == MaxSizeOfTableH);
+	}
+	bool Is_Empty()
+	{
+		return (countOfLine == NULL);
+	}
+	bool Search_In_Table_By_Name(std::string _nameOfLine)
+	{
+		size_t hashKey = Hash(_nameOfLine);
+		if (line[hashKey].numOfLine == 0) return false;
+		if (line[hashKey].nameOfLine == _nameOfLine)
+		{
 			return true;
+		}
 		else
-			return false;
+		{
+			THashLine<T>* p = new THashLine<T>;
+			p = line[hashKey].pNextLine;
+			for (size_t i = 0; i < line[hashKey].numOfLine - 1; i++)
+			{
+				if (p->nameOfLine == _nameOfLine)
+					return true;
+				p = p->pNextLine;
+			}
+		}
+		return false;
 	}
-
-	bool Is_Full()												//проверка на полноту
+	void InsertLine(std::string _nameOfLine, T /*TPolynominal */ _polinom)
 	{
-		if (count == MAX_SIZE)
-			return true;
+		if (Is_Full())
+			throw "Is Full";
+		size_t hashKey = Hash(_nameOfLine);
+		if (line[hashKey].numOfLine == 0)
+		{
+			line[hashKey].nameOfLine = _nameOfLine;
+			line[hashKey].value = _polinom;
+		}
 		else
-			return false;
+		{
+			line[hashKey].pNextLine = new THashLine<T>;
+			THashLine<T>* p = new THashLine<T>;
+			p = line[hashKey].pNextLine;
+			for (size_t i = 0; i < line[hashKey].numOfLine - 1; i++)
+			{
+				p->pNextLine = new THashLine<T>;
+				p = p->pNextLine;
+			}
+			p->nameOfLine = _nameOfLine;
+			p->value = _polinom;
+		}
+		line[hashKey].numOfLine++;
+		countOfLine++;
+
 	}
-
-	void Insert_Line(string _key, T _value)				//вставка
+	void DeleteLine(std::string _nameOfLine)
 	{
-		if (Is_Full == true)
-			throw "Table is full!";
-		int hashkey = In_Hash(_key);
+		if (Is_Empty())
+			throw "Is Empty";
+		if (Search_In_Table_By_Name(_nameOfLine) == false)
+			throw "Is Not Found";
+		size_t count = 0;
+		size_t hashKey = Hash(_nameOfLine);
+		if (line[hashKey].numOfLine == 1)
+		{
+			T _polinom;
+			line[hashKey].nameOfLine = "";
+			line[hashKey].value = _polinom;
 
-		if (line[hashkey].number_of_line == 0)		//если первое
-		{
-			line[hashkey].value = _value;
-			line[hashkey].key = _key;
 		}
-		else								//если уже записано что-то, то создаем следующее звено
+		else
 		{
-			line[hashkey].pnext = new TLine<T>;
-			TLine<T>* p = new TLine<T>;
-			p = line[hashkey].pnext;
-			for (int i = 0; i < line[hashkey].number_of_line - 1; i++)			//переходим на след звено, пока не дойдем до конца
+			THashLine<T>* p = new THashLine<T>;
+			p = line[hashKey].pNextLine;
+			while (p->nameOfLine != _nameOfLine)
 			{
-				p->pnext = new TLine<T>;
-				p = p->pnext;
+				p = p->pNextLine;
+				count++;
 			}
-			p->value = _value;
-			p->nameOfLine = _key;
-		}
-		line[hashkey].number_of_line++;		//каждый раз фиксируем новое звено
-		count++;					//увеличиваем число строк в хеш-таблице
-	}
-
-	int Search_In_Table_By_Name(string _key)						//поиск
-	{
-		int hashkey = In_Hash(_key);				// место, где лежит элемент
-		if (Is_Empty() == true)
-			return -1;
-		if (line[hashkey].key == _key)			// ключ сразу совпал
-		{
-			return 1;
-		}
-		else									//иначе переходим к следующему звену и ищем ключ там
-		{
-			TLine<T>* p = new TLine<T>;
-			p = line[hashkey].pnext;
-			for (int i = 0; i < line[hashkey].number_of_line - 1; i++)
+			THashLine<T>* pl = new THashLine<T>;
+			pl = line[hashKey].pNextLine;
+			for (size_t i = 0; i < count - 2; i++)
 			{
-				if (p->key == _key)
-					return 1;
-				p = p->pnext;
+				pl = pl->pNextLine;
 			}
-		}
-		return -1;
-	}
-
-	void delete_line(string _key)						//удаление
-	{
-		int a;
-		if (Is_Empty == true)							//проверка на пустоту
-			throw "Table is empty!";
-
-		if (Search_In_Table_By_Name(_key) == -1)		//проверка на существование
-			throw "Is not exist!";
-		int hashkey = In_Hash(_key);				//получение кеш-ключа(индекса в хеш-таблце)
-
-		if (line[hashkey].number_of_line == 1)		//если одно звено
-		{
-			T _value;
-			line[hashKey].key = "";
-			line[hashKey].value = _value;
-
-		}
-		else										//если больше одного
-		{
-			TLine<T>* p = new TLine<T>;
-			p = line[hashkey].pnext;				//переходим к след
-			while (p->key != _key)						//пока не найдем ключ
-			{
-				p->pnext;								//переходим к следующему
-				a++;									//запоминаем, сколько прошли
-			}
-			TLine<T>* pp = new TLine<T>;
-			pp = line[hashkey].pnext;
-			for (int i = 0; i < count - 2; i++)
-			{
-				pp = pp->pnext;
-			}
-			pp->pnext = p->pnext;
+			pl->pNextLine = p->pNextLine;
 			delete p;
 		}
-		line[hashkey].number_of_line--;
-		count--;
+		line[hashKey].numOfLine--;
+		countOfLine--;
 	}
-
-	void Print_Table()
+	T  GetPolinominal(std::string _nameOfLine)
 	{
-		for (int i = 0; i <; i++)
+		if (Is_Empty())
+			throw "Is Empty";
+		if (Search_In_Table_By_Name(_nameOfLine) == false)
+			throw "Is Not Found";
+		size_t hashKey = Hash(_nameOfLine);
+		if (line[hashKey].nameOfLine == _nameOfLine)
 		{
-
+			return line[hashKey].value;
 		}
-
-		for (int i = 0; i < line[].number_of_line - 1; i++)
+		else
 		{
+			THashLine<T>* p = new THashLine<T>;
+			p = line[hashKey].pNextLine;
 
+			for (size_t i = 0; i < line[hashKey].numOfLine - 1; i++)
+			{
+				if (p->nameOfLine == _nameOfLine)
+					return p->value;
+				p = p->pNextLine;
+			}
 		}
 	}
 };
+#endif
